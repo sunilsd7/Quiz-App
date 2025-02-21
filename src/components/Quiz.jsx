@@ -3,7 +3,14 @@ import questions from "../data/questions";
 import Question from "./Question";
 import Result from "./Result";
 
-const shuffleArray = (array) => {
+
+function Quiz() {
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [score, setScore] = useState(0);
+  const [gameOver, setGameOver] = useState(false);
+  const [userResponses, setUserResponses] = useState([]);
+
+  const shuffleArray = (array) => {
 
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1)); 
@@ -13,21 +20,15 @@ const shuffleArray = (array) => {
   
 };
 
-function Quiz() {
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [score, setScore] = useState(0);
-  const [gameOver, setGameOver] = useState(false);
-  const [userResponses, setUserResponses] = useState([]);
-
   const shuffledQuestions = shuffleArray([...questions]);
 
   const handleAnswer = (selectedOption) => {
     const currentQuestion = shuffledQuestions[currentQuestionIndex];
     const isCorrect = selectedOption === currentQuestion.answer;
     if (selectedOption === shuffledQuestions[currentQuestionIndex].answer) {
-      setScore((prevScore) => prevScore + 1);
+      setScore(score => score + 1);
     } else {
-      setScore((prevScore) => prevScore - 0.5);
+      setScore(score => score - 0.5);
     }
 
     setUserResponses((prevResponses) => [

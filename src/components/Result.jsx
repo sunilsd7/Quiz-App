@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 function Result({ score, total, userResponses }) {
 if(score<0 ){
@@ -26,13 +27,7 @@ if(score<0 ){
           </div>
         ))}
       </div>
-
-      <button
-        onClick={() => window.location.reload()}
-        className="mt-4 bg-blue-500 text-white py-2 px-5 rounded-lg"
-      >
-        Restart Quiz
-      </button>
+<Link to="/" className="mt-4 bg-blue-500 text-white py-2 px-5 rounded-lg">Restart quiz</Link>
     </div>
   );
 }

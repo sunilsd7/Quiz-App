@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 
 const Home = () => {
   return (
-    <div className=' p-32 justify-center'>
-      <div className='border-2 bg-amber-100 rounded-2xl p-5'>
+    <div className='grid mt-10 justify-center'>
+      <div className='border-2 bg-amber-100 rounded-2xl p-5 '>
       <h1 className="font-bold text-center text-2xl"> Let's test your general knowledge </h1>
    <p className='text-center mt-10'>
     
