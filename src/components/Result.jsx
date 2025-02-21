@@ -1,4 +1,3 @@
-
 import React from "react";
 
 function Result({ score, total, userResponses }) {
