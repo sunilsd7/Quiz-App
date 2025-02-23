@@ -11,17 +11,6 @@ function Quiz() {
 
  
   useEffect(() => {
-    if (gameOver) {
-      localStorage.removeItem("quizProgress");
-    } else {
-      localStorage.setItem(
-        "quizProgress",
-        JSON.stringify({ currentQuestionIndex, score, gameOver, userResponses })
-      );
-    }
-  }, [currentQuestionIndex, score, gameOver, userResponses]);
-
-  useEffect(() => {
     const savedProgress = localStorage.getItem("quizProgress");
     if (savedProgress) {
       try {
