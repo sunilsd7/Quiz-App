@@ -9,7 +9,7 @@ function Quiz() {
   const [gameOver, setGameOver] = useState(false);
   const [userResponses, setUserResponses] = useState([]);
 
- 
+
   useEffect(() => {
     const savedProgress = localStorage.getItem("quizProgress");
     if (savedProgress) {
@@ -23,10 +23,20 @@ function Quiz() {
         console.error("Error parsing quizProgress from localStorage:", error);
       }
     }
-  }, []);
+  }, []); 
+  useEffect(() => {
+    if (gameOver) {
+      localStorage.removeItem("quizProgress"); 
+    } else {
+   
+      localStorage.setItem(
+        "quizProgress",
+        JSON.stringify({ currentQuestionIndex, score, gameOver, userResponses })
+      );
+    }
+  }, [currentQuestionIndex, score, gameOver, userResponses]);
 
-
-
+  
   const shuffleArray = (array) => {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -63,15 +73,12 @@ function Quiz() {
   return (
     <div className="grid w-100% mt-10">
       {gameOver ? (
-        <Result score={score} total={questions.length} userResponses={userResponses} Sn={currentQuestionIndex+1} />
+        <Result score={score} total={questions.length} userResponses={userResponses} />
       ) : (
-        <>
-          <Question question={shuffledQuestions[currentQuestionIndex]} onAnswer={handleAnswer} />
-        </>
+        <Question question={shuffledQuestions[currentQuestionIndex]} onAnswer={handleAnswer} />
       )}
     </div>
   );
 }
 
 export default Quiz;
-

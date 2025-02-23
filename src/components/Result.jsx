@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
+
 function Result({ score, total, userResponses }) {
 if(score<0 ){
   score=0;
@@ -13,7 +14,7 @@ if(score<0 ){
 
       <h3 className="text-xl font-bold mt-6">Review Your Answers:</h3>
       <div className="mt-4 text-left">
-        {userResponses.map((response, index) => (
+        {userResponses.map((response, index ) => (
           <div key={index} className="mb-4 p-3 border rounded-md">
             <p className="font-semibold">
               {index + 1}. {response.question}
@@ -21,8 +22,10 @@ if(score<0 ){
             <p className={response.isCorrect ? "text-green-500 font-bold text-xl" : "text-red-500 text-xl font-bold"}>
               Your Answer: {response.selectedAnswer}
             </p>
-            {!response.isCorrect && (
+            {!response.isCorrect && (<>
               <p className="text-green-500 font-bold text-xl">Correct Answer: {response.correctAnswer}</p>
+              
+              </>
             )}
           </div>
         ))}

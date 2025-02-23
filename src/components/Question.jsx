@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-function Question({ question, onAnswer }) {
+function Question({ question, onAnswer,Sn}) {
   const [selectedOption, setSelectedOption] = useState(null);
 
   const handleSubmit = (e) => {
@@ -13,7 +13,7 @@ function Question({ question, onAnswer }) {
 
   return (
     <div className="text-center p-5 border rounded-lg shadow-md max-w-lg mx-auto">
-      <h2 className="text-2xl font-bold"> {question.question}</h2>
+      <h2 className="text-2xl font-bold">  {question.question}</h2>
 
       <form onSubmit={handleSubmit} className="mt-5">
         {question.options.map((option, index) => (
