@@ -3,36 +3,55 @@ import questions from "../data/questions";
 import Question from "./Question";
 import Result from "./Result";
 
-
-
-
 function Quiz() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [userResponses, setUserResponses] = useState([]);
 
-  const shuffleArray = (array) => {
+ 
+  useEffect(() => {
+    if (gameOver) {
+      localStorage.removeItem("quizProgress");
+    } else {
+      localStorage.setItem(
+        "quizProgress",
+        JSON.stringify({ currentQuestionIndex, score, gameOver, userResponses })
+      );
+    }
+  }, [currentQuestionIndex, score, gameOver, userResponses]);
 
+  useEffect(() => {
+    const savedProgress = localStorage.getItem("quizProgress");
+    if (savedProgress) {
+      try {
+        const parsedProgress = JSON.parse(savedProgress);
+        setCurrentQuestionIndex(parsedProgress.currentQuestionIndex);
+        setScore(parsedProgress.score);
+        setGameOver(parsedProgress.gameOver);
+        setUserResponses(parsedProgress.userResponses);
+      } catch (error) {
+        console.error("Error parsing quizProgress from localStorage:", error);
+      }
+    }
+  }, []);
+
+
+
+  const shuffleArray = (array) => {
     for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1)); 
-      [array[i], array[j]] = [array[j], array[i]]; 
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
     }
     return array;
-  
-};
-
+  };
 
   const shuffledQuestions = shuffleArray([...questions]);
 
   const handleAnswer = (selectedOption) => {
     const currentQuestion = shuffledQuestions[currentQuestionIndex];
     const isCorrect = selectedOption === currentQuestion.answer;
-    if (selectedOption === shuffledQuestions[currentQuestionIndex].answer) {
-      setScore(score => score + 1);
-    } else {
-      setScore(score => score - 0.5);
-    }
+    setScore((prevScore) => (isCorrect ? prevScore + 1 : prevScore - 0.5));
 
     setUserResponses((prevResponses) => [
       ...prevResponses,
@@ -43,29 +62,22 @@ function Quiz() {
         isCorrect: isCorrect,
       },
     ]);
+
     const nextIndex = currentQuestionIndex + 1;
     if (nextIndex < shuffledQuestions.length) {
       setCurrentQuestionIndex(nextIndex);
     } else {
-      setGameOver(true);
+      setGameOver(true); 
     }
   };
-  const handleSubmit=()=>{
-    setGameOver(true);
-  }
 
   return (
-    <div className="grid w-100%  mt-10">
+    <div className="grid w-100% mt-10">
       {gameOver ? (
-        <Result score={score} total={questions.length} userResponses={userResponses} />
+        <Result score={score} total={questions.length} userResponses={userResponses} Sn={currentQuestionIndex+1} />
       ) : (
         <>
-          <Question
-            question={shuffledQuestions[currentQuestionIndex]}
-            onAnswer={handleAnswer}
-         
-          />
-          <button onClick={handleSubmit} className="bg-red-700 text-white w-64  py-4 rounded-2xl"> Result</button>
+          <Question question={shuffledQuestions[currentQuestionIndex]} onAnswer={handleAnswer} />
         </>
       )}
     </div>
@@ -73,3 +85,98 @@ function Quiz() {
 }
 
 export default Quiz;
+
+
+// import React, { useEffect, useState } from "react";
+// import questions from "../data/questions";
+// import Question from "./Question";
+// import Result from "./Result";
+// import Cookies from "js-cookie";
+
+
+// function Quiz() {
+//   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+//   const [score, setScore] = useState(0);
+//   const [gameOver, setGameOver] = useState(false);
+//   const [userResponses, setUserResponses] = useState([]);
+
+//   useEffect(() => {
+//     const savedProgress = Cookies.get("quizProgress");
+//     if (savedProgress) {
+//       try {
+//         const parsedProgress = JSON.parse(savedProgress);
+//         setCurrentQuestionIndex(parsedProgress.currentQuestionIndex);
+//         setScore(parsedProgress.score);
+//         setGameOver(parsedProgress.gameOver);
+//         setUserResponses(parsedProgress.userResponses)
+//       } catch (error) {
+//         console.error("Error parsing quizProgress cookie:", error);
+//       }
+//     }
+//   }, []);
+
+//   useEffect(() => {
+//     if (currentQuestionIndex !== 0 || score !== 0) {
+//       Cookies.set("quizProgress", JSON.stringify({ currentQuestionIndex, score, gameOver,userResponses }), { expires: 7, path: "/" });
+//     }
+//   }, [currentQuestionIndex, score, gameOver]);
+
+//   const shuffleArray = (array) => {
+
+//     for (let i = array.length - 1; i > 0; i--) {
+//       const j = Math.floor(Math.random() * (i + 1)); 
+//       [array[i], array[j]] = [array[j], array[i]]; 
+//     }
+//     return array;
+  
+// };
+
+
+//   const shuffledQuestions = shuffleArray([...questions]);
+
+//   const handleAnswer = (selectedOption) => {
+//     const currentQuestion = shuffledQuestions[currentQuestionIndex];
+//     const isCorrect = selectedOption === currentQuestion.answer;
+//     if (selectedOption === shuffledQuestions[currentQuestionIndex].answer) {
+//       setScore(score => score + 1);
+//     } else {
+//       setScore(score => score - 0.5);
+//     }
+
+//     setUserResponses((prevResponses) => [
+//       ...prevResponses,
+//       {
+//         question: currentQuestion.question,
+//         selectedAnswer: selectedOption,
+//         correctAnswer: currentQuestion.answer,
+//         isCorrect: isCorrect,
+//       },
+//     ]);
+//     const nextIndex = currentQuestionIndex + 1;
+//     if (nextIndex < shuffledQuestions.length) {
+//       setCurrentQuestionIndex(nextIndex);
+//     } else {
+//       setGameOver(true);
+//     }
+//   };
+
+
+//   return (
+//     <div className="grid w-100%  mt-10">
+//       {gameOver ? (
+//         <Result score={score} total={questions.length} userResponses={userResponses} />
+//       ) : (
+//         <>
+//           <Question
+//             question={shuffledQuestions[currentQuestionIndex]}
+//             onAnswer={handleAnswer}
+         
+//           />
+ 
+//         </>
+//       )}
+//     </div>
+//   );
+// }
+
+// export default Quiz;
