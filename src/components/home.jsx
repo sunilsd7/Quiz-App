@@ -3,16 +3,34 @@ import { Link } from 'react-router-dom';
 
 const Home = () => {
   return (
-    <div className='grid mt-10 justify-center'>
-      <div className='border-2 bg-amber-100 rounded-2xl p-5 '>
-      <h1 className="font-bold text-center text-2xl"> Let's test your general knowledge </h1>
-   <p className='text-center mt-10'>
-    
-        <Link to="/quiz" className='bg-blue-600 text-white rounded-lg text-2xl px-3 text-center mt-10'> Start quiz</Link>
-     
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 to-amber-100 p-4">
+      <div className="bg-white shadow-lg rounded-2xl p-8 max-w-lg w-full text-center">
+        <h1 className="text-3xl font-bold text-gray-800">
+          Let's Test Your General Knowledge! 🧠
+        </h1>
+        <p className="text-gray-600 mt-3">
+          Challenge yourself with some fun and interesting questions!
         </p>
-        <p className='items-center  mt-5  ml-5'> Rules of Quiz game <li>Right answer=(score+1)</li><li>Wrong answer=(score-0.5)</li></p>
-    </div>
+
+        {/* Start Quiz Button */}
+        <div className="mt-6">
+          <Link 
+            to="/quiz" 
+            className="bg-blue-600 text-white text-xl font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-blue-700 transition duration-300 transform hover:scale-105"
+          >
+            Start Quiz 🚀
+          </Link>
+        </div>
+
+        {/* Rules Section */}
+        <div className="mt-8 text-left">
+          <h2 className="text-lg font-semibold text-gray-800">📜 Quiz Rules:</h2>
+          <ul className="list-disc list-inside text-gray-600 mt-2">
+            <li><span className="font-medium text-green-600">+1</span> point for each correct answer</li>
+            <li><span className="font-medium text-red-600">-0.5</span> points for each wrong answer</li>
+          </ul>
+        </div>
+      </div>
     </div>
   );
 };
