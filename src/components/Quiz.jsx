@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import questions from "../data/questions";
+import questions from "../data/questions";  
 import Question from "./Question";
 import Result from "./Result";
 
@@ -9,14 +9,15 @@ function Quiz() {
   const [gameOver, setGameOver] = useState(false);
   const [userResponses, setUserResponses] = useState([]);
   const [shuffledQuestions, setShuffledQuestions] = useState(null);
-  const [Sn,SetSn]=useState(0);
+  const [Sn, SetSn] = useState(0);
   const [loading, setLoading] = useState(true);
 
+  const [correctAnswers, setCorrectAnswers] = useState(0);
+  const [incorrectAnswers, setIncorrectAnswers] = useState(0);
 
   const shuffleArray = (array) => {
     return array.sort(() => Math.random() - 0.5);
   };
-
 
   useEffect(() => {
     const savedProgress = localStorage.getItem("quizProgress");
@@ -24,25 +25,24 @@ function Quiz() {
     if (savedProgress) {
       try {
         const parsedProgress = JSON.parse(savedProgress);
-        setCurrentQuestionIndex(parsedProgress.currentQuestionIndex);
-        setScore(parsedProgress.score);
-        setGameOver(parsedProgress.gameOver);
-        setUserResponses(parsedProgress.userResponses);
-        setShuffledQuestions(parsedProgress.questions || shuffleArray([...questions]));
-        SetSn(parsedProgress.Sn);
+        setCurrentQuestionIndex(parsedProgress.currentQuestionIndex || 0);
+        setScore(parsedProgress.score || 0);
+        setGameOver(parsedProgress.gameOver || false);
+        setUserResponses(parsedProgress.userResponses || []);
+        SetSn(parsedProgress.Sn || 0);
+        setCorrectAnswers(parsedProgress.correctAnswers || 0);
+        setIncorrectAnswers(parsedProgress.incorrectAnswers || 0);
       } catch (error) {
         console.error("Error parsing saved progress:", error);
-        setShuffledQuestions(shuffleArray([...questions]));
       }
-    } else {
-      setShuffledQuestions(shuffleArray([...questions]));
     }
 
+    setShuffledQuestions(shuffleArray([...questions])); 
     setTimeout(() => setLoading(false), 1000); 
   }, []);
 
-  
   useEffect(() => {
+
     if (shuffledQuestions) {
       localStorage.setItem(
         "quizProgress",
@@ -51,13 +51,13 @@ function Quiz() {
           score,
           gameOver,
           userResponses,
-          questions: shuffledQuestions,
-          Sn,
+         
+          correctAnswers,
+          incorrectAnswers,
         })
       );
     }
-  }, [currentQuestionIndex, score, gameOver, userResponses, shuffledQuestions,Sn]);
-
+  }, [currentQuestionIndex, score, gameOver, userResponses, shuffledQuestions,  correctAnswers, incorrectAnswers]);
 
   const handleAnswer = (selectedOption) => {
     if (!shuffledQuestions) return;
@@ -66,12 +66,20 @@ function Quiz() {
     const isCorrect = selectedOption === currentQuestion.answer;
 
     setScore((prevScore) => Math.max(0, isCorrect ? prevScore + 1 : prevScore - 0.5));
+
+    if (isCorrect) {
+      setCorrectAnswers((prevCount) => prevCount + 1);
+    } else {
+      setIncorrectAnswers((prevCount) => prevCount + 1);
+    }
+
     setUserResponses((prevResponses) => [
       ...prevResponses,
       {
         question: currentQuestion.question,
         selectedAnswer: selectedOption,
         correctAnswer: currentQuestion.answer,
+        options: currentQuestion,
         isCorrect,
       },
     ]);
@@ -96,11 +104,22 @@ function Quiz() {
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 p-4">
       <div className="bg-white shadow-xl rounded-lg p-8 max-w-lg w-full text-center">
         {gameOver ? (
-          <Result score={score} total={shuffledQuestions.length} userResponses={userResponses}  />
+          <Result 
+            score={score} 
+            total={shuffledQuestions.length} 
+            userResponses={userResponses} 
+            correctAnswer={correctAnswers} 
+            incorrectAnswer={incorrectAnswers} 
+          />
         ) : (
-          <Question question={shuffledQuestions[currentQuestionIndex]} Sn={currentQuestionIndex+1} onAnswer={handleAnswer}  />
+          <Question 
+            question={shuffledQuestions[currentQuestionIndex]} 
+            Sn={currentQuestionIndex + 1} 
+            onAnswer={handleAnswer} 
+          />
         )}
       </div>
+   
     </div>
   );
 }

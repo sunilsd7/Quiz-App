@@ -42,7 +42,7 @@ function Question({ question, onAnswer, Sn }) {
           disabled={selectedOption === null}
           className="bg-blue-500 w-full py-3 text-white rounded-lg font-semibold mt-4 disabled:bg-gray-400 hover:bg-blue-600 transition duration-300"
         >
-          Next Question →
+          Next Question 
         </button>
       </form>
     </div>
